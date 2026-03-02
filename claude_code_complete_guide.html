@@ -44,8 +44,8 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 
 /* ── ARCH LAYOUT ── */
 .arch-layout { display:flex; gap:24px; align-items:flex-start; }
-.arch-left { max-width:880px; min-width:0; flex-shrink:0; }
-.arch-right { flex:1; min-width:320px; position:sticky; top:80px; max-height:calc(100vh - 100px); overflow-y:auto; }
+.arch-left { flex:1; min-width:0; }
+.arch-right { width:480px; flex-shrink:0; position:sticky; top:80px; max-height:calc(100vh - 100px); overflow-y:auto; }
 
 /* ── FLOWCHART ── */
 .flow-canvas { position:relative; width:100%; min-height:1200px; margin-bottom:40px; }
@@ -90,23 +90,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .code { background:#080c16; border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text2); line-height:1.7; overflow-x:auto; margin-bottom:16px; white-space:pre; }
 .code .kw { color:var(--purple); } .code .str { color:var(--green); } .code .cm { color:var(--text4); } .code .fn { color:var(--blue); }
 
-/* ── SIMULATION ── */
-.sim-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:40px; }
-.sim-wrap h3 { font-size:14px; font-family:'JetBrains Mono',monospace; color:var(--text3); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px; }
-.sim-input { width:100%; padding:10px 14px; background:#080c16; border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px; resize:none; height:50px; outline:none; margin-bottom:10px; }
-.sim-input:focus { border-color:var(--green-d); }
-.sim-row { display:flex; gap:8px; margin-bottom:14px; }
-.spd-btn { flex:1; padding:7px; background:transparent; border:1px solid var(--border); color:var(--text3); font-family:'JetBrains Mono',monospace; font-size:10px; border-radius:6px; cursor:pointer; }
-.spd-btn.on { border-color:var(--blue); color:var(--blue); background:var(--blue-d); }
-.sim-go { width:100%; padding:12px; border:1px solid var(--green-d); background:rgba(22,101,52,.15); color:var(--green); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer; letter-spacing:.5px; }
-.sim-go:hover { background:rgba(22,101,52,.3); border-color:var(--green); }
-.sim-go:disabled { opacity:.4; cursor:not-allowed; }
-.sim-log { margin-top:14px; max-height:280px; overflow-y:auto; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.9; }
-.slog { color:var(--text4); padding:2px 0; opacity:0; animation:fadeIn .3s forwards; }
-.slog .sn { display:inline-block; width:24px; color:var(--text4); }
-.slog.cur { color:var(--green); }
-.slog.done { color:var(--text3); }
-@keyframes fadeIn { to{opacity:1} }
 
 /* ── FAQ / CARDS ── */
 .faq-grid { display:grid; grid-template-columns:1fr; gap:12px; }
@@ -138,7 +121,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 /* ── RESPONSIVE ── */
 @media(max-width:1100px) {
   .arch-layout { flex-direction:column; }
-  .arch-right { flex:unset; width:100%; min-width:unset; position:static; max-height:none; }
+  .arch-right { width:100%; position:static; max-height:none; }
 }
 @media(max-width:768px) {
   .hero h1 { font-size:28px; }
@@ -168,7 +151,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 <!-- ═══════════════════════════════════════════════════════ -->
 <div class="section active" id="tab-arch">
   <h2>How Claude Code Works</h2>
-  <p class="section-sub">click any node to explore · run the simulation below to trace a prompt through the system</p>
+  <p class="section-sub">click any node to explore its details</p>
 
   <div class="arch-layout">
   <div class="arch-left">
@@ -258,17 +241,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     <div class="dp-hint">Click any node to see detailed information about that component</div>
   </div>
 
-  <div class="sim-wrap">
-    <h3>⚡ Prompt Simulation</h3>
-    <textarea class="sim-input" id="simInput" placeholder='Type a prompt, e.g. "Fix the bug in auth.py"'></textarea>
-    <div class="sim-row">
-      <button class="spd-btn on" data-s="1200" onclick="setSpd(this)">Slow</button>
-      <button class="spd-btn" data-s="700" onclick="setSpd(this)">Normal</button>
-      <button class="spd-btn" data-s="350" onclick="setSpd(this)">Fast</button>
-    </div>
-    <button class="sim-go" id="simBtn" onclick="runSim()">▶ Simulate Prompt Flow</button>
-    <div class="sim-log" id="simLog"></div>
-  </div>
   </div><!-- end arch-right -->
   </div><!-- end arch-layout -->
 </div>
@@ -465,83 +437,6 @@ document.querySelectorAll('.flow-node').forEach(n=>{
   });
 });
 
-// ═══════════════════════════════════════════════════════
-// SIMULATION
-// ═══════════════════════════════════════════════════════
-let simRun=false, simSpd=1200;
-function setSpd(b){document.querySelectorAll('.spd-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');simSpd=+b.dataset.s;}
-
-async function animPkt(i){
-  const p=document.getElementById(`c${i}`), pk=document.getElementById(`pk${i}`);
-  if(!p||!pk) return;
-  p.classList.add('active'); p.setAttribute('marker-end','url(#arr-a)');
-  const lb=document.getElementById(`cl${i}`); if(lb) lb.classList.add('active');
-  pk.classList.add('on');
-  const len=p.getTotalLength(), dur=simSpd*.6, t0=performance.now();
-  await new Promise(r=>{
-    (function tick(now){
-      const t=Math.min((now-t0)/dur,1), e=t<.5?2*t*t:-1+(4-2*t)*t;
-      const pt=p.getPointAtLength(e*len); pk.setAttribute('cx',pt.x); pk.setAttribute('cy',pt.y);
-      t<1?requestAnimationFrame(tick):(() => { pk.classList.remove('on');
-        setTimeout(()=>{p.classList.remove('active');p.setAttribute('marker-end','url(#arr)');if(lb)lb.classList.remove('active');},simSpd*.3);r();})();
-    })(performance.now());
-  });
-}
-
-function simSteps(pr){
-  const p=pr||"Fix the bug in auth.py";
-  return [
-    {n:"user",t:`You type: "${p}"`,h:["user"]},
-    {n:"cli",t:"Shell resolves 'claude' → /usr/local/bin/claude",h:["user","cli"],e:0},
-    {n:"node",t:"Node.js V8 engine starts, loads TypeScript app",h:["cli","node"],e:1},
-    {n:"app",t:"Claude Code app receives prompt, begins processing",h:["node","app"],e:3},
-    {n:"tui",t:"Terminal UI shows spinner: 'Thinking...'",h:["app","tui"],e:5},
-    {n:"app",t:"App builds context: system prompt + tools + CLAUDE.md + your prompt",h:["app"]},
-    {n:"apiclient",t:"API Client prepares HTTPS request with full context",h:["app","apiclient"]},
-    {n:"api",t:"Request streamed to Anthropic API → Claude model processes",h:["apiclient","api"],e:10},
-    {n:"context",t:"Context window: system prompt + tool defs + CLAUDE.md + prompt",h:["api","context"],e:11},
-    {n:"api",t:"Model decides: need to read auth.py first → returns tool_use",h:["api"]},
-    {n:"apiclient",t:"API Client receives tool_use response via SSE stream",h:["api","apiclient"],e:12},
-    {n:"tools",t:"Tool Executor dispatched: Read('src/auth.py')",h:["app","tools"],e:6},
-    {n:"tui",t:"UI shows: 'Reading src/auth.py'",h:["tui"]},
-    {n:"fs",t:"Node.js fs module reads file from disk",h:["tools","fs"],e:7},
-    {n:"tools",t:"File contents returned as tool_result",h:["tools"]},
-    {n:"apiclient",t:"Tool result added to messages, new API call",h:["tools","apiclient"],e:9},
-    {n:"api",t:"Model sees file, identifies bug → returns Edit tool_use",h:["apiclient","api"],e:10},
-    {n:"tui",t:"UI shows permission prompt: 'Edit src/auth.py? (Y/n)'",h:["tui"]},
-    {n:"user",t:"You press 'Y' to approve the edit",h:["user"]},
-    {n:"tools",t:"Tool Executor applies edit: == None → is None",h:["tools"]},
-    {n:"fs",t:"File written to disk with fix applied ✓",h:["tools","fs"],e:7},
-    {n:"app",t:"App decides to verify fix by running tests",h:["app"]},
-    {n:"tools",t:"Tool Executor: Bash('pytest tests/test_auth.py -v')",h:["app","tools"],e:6},
-    {n:"bash",t:"pytest subprocess runs → all tests pass ✓",h:["tools","bash"],e:8},
-    {n:"apiclient",t:"Test results sent to API for final response",h:["tools","apiclient"],e:9},
-    {n:"api",t:"Model generates summary of changes + test results",h:["apiclient","api"],e:10},
-    {n:"tui",t:"'Fixed None comparison in auth.py. All tests passing.'",h:["tui"]},
-    {n:"user",t:"Done! You see the result in your terminal ✓",h:["user"]},
-  ];
-}
-
-async function runSim(){
-  if(simRun) return; simRun=true;
-  const btn=document.getElementById('simBtn'); btn.disabled=true; btn.textContent='⏳ Running...';
-  const log=document.getElementById('simLog'); log.innerHTML='';
-  const steps=simSteps(document.getElementById('simInput').value);
-  for(let i=0;i<steps.length;i++){
-    const s=steps[i];
-    document.querySelectorAll('.flow-node').forEach(n=>n.classList.remove('active','pulse'));
-    s.h.forEach(id=>{const el=document.querySelector(`[data-id="${id}"]`);if(el)el.classList.add('active','pulse');});
-    showDetail(s.n);
-    if(s.e!==undefined) animPkt(s.e);
-    const e=document.createElement('div'); e.className='slog cur';
-    e.innerHTML=`<span class="sn">${String(i+1).padStart(2,'0')}</span> ${s.t}`;
-    log.appendChild(e); log.scrollTop=log.scrollHeight;
-    log.querySelectorAll('.slog').forEach((x,j)=>{if(j<log.children.length-1){x.classList.remove('cur');x.classList.add('done');}});
-    await new Promise(r=>setTimeout(r,simSpd));
-  }
-  document.querySelectorAll('.flow-node').forEach(n=>n.classList.remove('active','pulse'));
-  simRun=false; btn.disabled=false; btn.textContent='▶ Simulate Prompt Flow';
-}
 
 // ═══════════════════════════════════════════════════════
 // FAQ DATA — FILES & STORAGE
