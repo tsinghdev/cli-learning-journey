@@ -18,6 +18,21 @@
   --orange: #c8895a; --orange-d: #33180a;
   --cyan: #5fb8c4; --cyan-d: #0c2a33;
   --red: #c47272; --red-d: #350e0e;
+  --code-bg: #080c16; --shadow-color: rgba(0,0,0,.5);
+}
+[data-theme="light"] {
+  --bg: #f8f9fb; --bg2: #ffffff; --bg3: #f0f1f4; --bg4: #e5e7ec;
+  --border: #d1d5db; --border2: #b0b7c3;
+  --text: #1a1a2e; --text2: #4a4a5a; --text3: #6b7280; --text4: #9ca3af;
+  --green: #16a34a; --green-d: #dcfce7;
+  --blue: #2563eb; --blue-d: #dbeafe;
+  --purple: #7c3aed; --purple-d: #ede9fe;
+  --amber: #d97706; --amber-d: #fef3c7;
+  --pink: #db2777; --pink-d: #fce7f3;
+  --orange: #ea580c; --orange-d: #ffedd5;
+  --cyan: #0891b2; --cyan-d: #cffafe;
+  --red: #dc2626; --red-d: #fee2e2;
+  --code-bg: #f3f4f6; --shadow-color: rgba(0,0,0,.1);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; }
@@ -26,7 +41,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
 
 /* ── HEADER ── */
-.hero { text-align:center; padding:48px 20px 32px; border-bottom:1px solid var(--border); }
+.hero { position:relative; text-align:center; padding:48px 20px 32px; border-bottom:1px solid var(--border); }
 .hero h1 { font-size:42px; font-weight:800; letter-spacing:-2px; background:linear-gradient(135deg,var(--green),var(--blue),var(--purple));background-size:200% 200%; -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
 .hero .sub { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text3); }
 
@@ -48,10 +63,10 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .arch-right { width:480px; flex-shrink:0; position:sticky; top:80px; max-height:calc(100vh - 100px); overflow-y:auto; }
 
 /* ── FLOWCHART ── */
-.flow-canvas { position:relative; width:100%; min-height:1200px; margin-bottom:40px; }
+.flow-canvas { position:relative; width:100%; min-height:1500px; margin-bottom:40px; }
 .flow-node { position:absolute; width:280px; padding:18px 20px 18px 24px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); z-index:2; }
 .flow-node::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:4px; border-radius:4px; }
-.flow-node:hover,.flow-node.active { background:var(--bg3); border-color:var(--border2); transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,.5); }
+.flow-node:hover,.flow-node.active { background:var(--bg3); border-color:var(--border2); transform:translateY(-3px); box-shadow:0 12px 40px var(--shadow-color); }
 .flow-node .n-icon { font-size:22px; margin-bottom:6px; }
 .flow-node .n-label { font-weight:600; font-size:15px; margin-bottom:4px; }
 .flow-node .n-tech { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text3); line-height:1.5; }
@@ -87,7 +102,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .dp-list { list-style:none; margin-bottom:20px; }
 .dp-list li { font-size:13px; color:var(--text2); padding:7px 0; border-bottom:1px solid rgba(30,41,59,.5); display:flex; gap:8px; align-items:flex-start; }
 .dp-list li::before { content:'▸'; color:var(--text4); flex-shrink:0; }
-.code { background:#080c16; border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text2); line-height:1.7; overflow-x:auto; margin-bottom:16px; white-space:pre; }
+.code { background:var(--code-bg); border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text2); line-height:1.7; overflow-x:auto; margin-bottom:16px; white-space:pre; }
 .code .kw { color:var(--purple); } .code .str { color:var(--green); } .code .cm { color:var(--text4); } .code .fn { color:var(--blue); }
 
 
@@ -118,6 +133,10 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .tip-box { background:rgba(22,101,52,.1); border:1px solid var(--green-d); border-radius:8px; padding:12px 16px; margin:10px 0; font-size:12px; color:var(--green); }
 .warn-box { background:rgba(120,53,15,.15); border:1px solid var(--amber-d); border-radius:8px; padding:12px 16px; margin:10px 0; font-size:12px; color:var(--amber); }
 
+/* ── THEME TOGGLE ── */
+.theme-toggle { position:absolute; top:16px; right:20px; background:var(--bg3); border:1px solid var(--border); border-radius:20px; padding:6px 12px; cursor:pointer; font-size:18px; line-height:1; transition:all .2s; color:var(--text2); z-index:10; }
+.theme-toggle:hover { border-color:var(--border2); background:var(--bg4); }
+
 /* ── RESPONSIVE ── */
 @media(max-width:1100px) {
   .arch-layout { flex-direction:column; }
@@ -129,10 +148,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   .section { padding:20px 16px 40px; }
 }
 </style>
+<script>
+(function(){var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();
+</script>
 </head>
 <body>
 
 <div class="hero">
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">🌙</button>
   <h1>Claude Code</h1>
   <p class="sub">the complete interactive guide — architecture · files · modes · power commands</p>
 </div>
@@ -157,12 +180,12 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <div class="arch-left">
   <div class="flow-canvas" id="canvas">
     <!-- Groups -->
-    <div class="group-box" style="left:80px;top:240px;width:680px;height:370px;border-color:rgba(30,41,59,.5);"></div>
-    <div class="group-lbl" style="left:100px;top:250px;color:var(--text4);">Node.js Process</div>
-    <div class="group-box" style="left:80px;top:700px;width:380px;height:280px;border-color:rgba(200,137,90,.2);"></div>
-    <div class="group-lbl" style="left:100px;top:710px;color:var(--orange);">Local Machine</div>
-    <div class="group-box" style="left:500px;top:700px;width:340px;height:380px;border-color:rgba(160,138,191,.2);"></div>
-    <div class="group-lbl" style="left:520px;top:710px;color:var(--purple);">Anthropic Cloud</div>
+    <div class="group-box" style="left:80px;top:400px;width:710px;height:400px;border-color:rgba(30,41,59,.7);border-width:2px;"></div>
+    <div class="group-lbl" style="left:100px;top:410px;color:var(--text4);">Node.js Process</div>
+    <div class="group-box" style="left:80px;top:860px;width:350px;height:400px;border-color:rgba(200,137,90,.4);border-width:2px;"></div>
+    <div class="group-lbl" style="left:100px;top:870px;color:var(--orange);">Local Machine</div>
+    <div class="group-box" style="left:460px;top:860px;width:390px;height:590px;border-color:rgba(160,138,191,.4);border-width:2px;"></div>
+    <div class="group-lbl" style="left:480px;top:870px;color:var(--purple);">Anthropic Cloud</div>
 
     <svg class="flow-svg" id="connSvg"></svg>
 
@@ -173,61 +196,61 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
       <div class="n-tech">Bash / Zsh / PowerShell terminal</div>
       <span class="n-badge">entry point</span>
     </div>
-    <div class="flow-node" data-id="cli" data-c="blue" style="left:280px;top:150px;">
+    <div class="flow-node" data-id="cli" data-c="blue" style="left:280px;top:210px;">
       <div class="n-icon">▶</div>
       <div class="n-label">Claude CLI Wrapper</div>
       <div class="n-tech">/usr/local/bin/claude → shell script</div>
       <span class="n-badge">npm global binary</span>
     </div>
-    <div class="flow-node" data-id="node" data-c="green" style="left:100px;top:300px;">
+    <div class="flow-node" data-id="node" data-c="green" style="left:120px;top:450px;">
       <div class="n-icon">⬡</div>
       <div class="n-label">Node.js Runtime</div>
       <div class="n-tech">V8 Engine · Event Loop · libuv · JIT</div>
       <span class="n-badge">execution engine</span>
     </div>
-    <div class="flow-node" data-id="app" data-c="amber" style="left:460px;top:300px;">
+    <div class="flow-node" data-id="app" data-c="amber" style="left:480px;top:450px;">
       <div class="n-icon">📦</div>
       <div class="n-label">Claude Code App</div>
       <div class="n-tech">TypeScript · @anthropic-ai/claude-code</div>
       <span class="n-badge">core orchestrator</span>
     </div>
-    <div class="flow-node" data-id="tui" data-c="pink" style="left:100px;top:470px;">
+    <div class="flow-node" data-id="tui" data-c="pink" style="left:120px;top:640px;">
       <div class="n-icon">🖥</div>
       <div class="n-label">Terminal UI</div>
       <div class="n-tech">Ink (React for CLI) · Chalk · Spinners</div>
       <span class="n-badge">display layer</span>
     </div>
-    <div class="flow-node" data-id="tools" data-c="orange" style="left:460px;top:470px;">
+    <div class="flow-node" data-id="tools" data-c="orange" style="left:480px;top:640px;">
       <div class="n-icon">🔧</div>
       <div class="n-label">Tool Executor</div>
       <div class="n-tech">File Read/Write · Shell · Grep · LSP · MCP</div>
       <span class="n-badge">local actions</span>
     </div>
-    <div class="flow-node" data-id="fs" data-c="orange" style="left:100px;top:740px;">
+    <div class="flow-node" data-id="fs" data-c="orange" style="left:120px;top:910px;">
       <div class="n-icon">📂</div>
       <div class="n-label">Your Codebase</div>
       <div class="n-tech">Read · Write · Patch · Grep · Search files</div>
       <span class="n-badge">filesystem</span>
     </div>
-    <div class="flow-node" data-id="bash" data-c="orange" style="left:100px;top:890px;">
+    <div class="flow-node" data-id="bash" data-c="orange" style="left:120px;top:1100px;">
       <div class="n-icon">⚙️</div>
       <div class="n-label">Subprocesses</div>
       <div class="n-tech">bash · npm · pytest · git · make · ruff</div>
       <span class="n-badge">child_process</span>
     </div>
-    <div class="flow-node" data-id="apiclient" data-c="cyan" style="left:460px;top:740px;">
+    <div class="flow-node" data-id="apiclient" data-c="cyan" style="left:480px;top:910px;">
       <div class="n-icon">🔌</div>
       <div class="n-label">API Client</div>
       <div class="n-tech">HTTPS · SSE Streaming · Retries · Auth</div>
       <span class="n-badge">network layer</span>
     </div>
-    <div class="flow-node" data-id="api" data-c="purple" style="left:520px;top:890px;">
+    <div class="flow-node" data-id="api" data-c="purple" style="left:540px;top:1100px;">
       <div class="n-icon">🧠</div>
       <div class="n-label">Anthropic API</div>
       <div class="n-tech">Claude model · /v1/messages · Tool use</div>
       <span class="n-badge">inference</span>
     </div>
-    <div class="flow-node" data-id="context" data-c="purple" style="left:520px;top:1030px;">
+    <div class="flow-node" data-id="context" data-c="purple" style="left:540px;top:1290px;">
       <div class="n-icon">🗂</div>
       <div class="n-label">Context Window</div>
       <div class="n-tech">System prompt · History · Tool results · CLAUDE.md</div>
@@ -988,6 +1011,26 @@ function renderFAQ(containerId, data) {
 }
 
 // ═══════════════════════════════════════════════════════
+// THEME TOGGLE
+// ═══════════════════════════════════════════════════════
+function updateToggleIcon() {
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '☀️' : '🌙';
+}
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
+  }
+  updateToggleIcon();
+});
+updateToggleIcon();
+
+// ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
 window.addEventListener('load', () => {
@@ -1000,7 +1043,7 @@ window.addEventListener('load', () => {
   renderFAQ('faq-power', FAQ_POWER);
 });
 </script>
-<footer style="text-align:center;padding:24px 16px;margin-top:48px;font-size:0.82rem;color:#888;border-top:1px solid #e0e0e0;">
+<footer style="text-align:center;padding:24px 16px;margin-top:48px;font-size:0.82rem;color:var(--text3);border-top:1px solid var(--border);">
   High-level illustration for educational purposes only &mdash; as of 2026-03-01.
   Actual architecture may differ or have more parts than shown here.
 </footer>
