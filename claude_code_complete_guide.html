@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — The Complete Interactive Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06090f; --bg2: #0c1120; --bg3: #111827; --bg4: #1a2332;
+  --border: #1e293b; --border2: #334155;
+  --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b; --text4: #475569;
+  --green: #4ade80; --green-d: #052e16;
+  --blue: #38bdf8; --blue-d: #0c4a6e;
+  --purple: #c084fc; --purple-d: #1a0a2e;
+  --amber: #fbbf24; --amber-d: #451a03;
+  --pink: #f472b6; --pink-d: #500724;
+  --orange: #fb923c; --orange-d: #431407;
+  --cyan: #22d3ee; --cyan-d: #083344;
+  --red: #f87171; --red-d: #450a0a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; }
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+/* ── HEADER ── */
+.hero { text-align:center; padding:48px 20px 32px; border-bottom:1px solid var(--border); }
+.hero h1 { font-size:42px; font-weight:800; letter-spacing:-2px; background:linear-gradient(135deg,var(--green),var(--blue),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+.hero .sub { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text3); }
+
+/* ── NAV TABS ── */
+.nav { display:flex; justify-content:center; gap:4px; padding:16px 20px; border-bottom:1px solid var(--border); background:var(--bg2); position:sticky; top:0; z-index:100; flex-wrap:wrap; }
+.nav-btn { padding:8px 18px; border:1px solid var(--border); background:transparent; color:var(--text3); font-family:'JetBrains Mono',monospace; font-size:12px; border-radius:6px; cursor:pointer; transition:all .2s; }
+.nav-btn:hover { border-color:var(--border2); color:var(--text2); }
+.nav-btn.active { border-color:var(--green); color:var(--green); background:var(--green-d); }
+
+/* ── SECTIONS ── */
+.section { display:none; max-width:1100px; margin:0 auto; padding:32px 24px 60px; }
+.section.active { display:block; }
+.section h2 { font-size:28px; font-weight:700; margin-bottom:8px; letter-spacing:-0.5px; }
+.section .section-sub { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text3); margin-bottom:32px; }
+
+/* ── FLOWCHART ── */
+.flow-canvas { position:relative; width:100%; min-height:1200px; margin-bottom:40px; }
+.flow-node { position:absolute; width:280px; padding:18px 20px 18px 24px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); z-index:2; }
+.flow-node::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:4px; border-radius:4px; }
+.flow-node:hover,.flow-node.active { background:var(--bg3); border-color:var(--border2); transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,.5); }
+.flow-node .n-icon { font-size:22px; margin-bottom:6px; }
+.flow-node .n-label { font-weight:600; font-size:15px; margin-bottom:4px; }
+.flow-node .n-tech { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text3); line-height:1.5; }
+.flow-node .n-badge { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:9px; padding:2px 8px; border-radius:4px; margin-top:8px; text-transform:uppercase; letter-spacing:.5px; }
+.flow-node[data-c="green"]::before{background:var(--green)} .flow-node[data-c="green"] .n-badge{background:var(--green-d);color:var(--green)} .flow-node[data-c="green"].active{border-color:var(--green);box-shadow:0 0 40px rgba(74,222,128,.12)}
+.flow-node[data-c="blue"]::before{background:var(--blue)} .flow-node[data-c="blue"] .n-badge{background:var(--blue-d);color:var(--blue)} .flow-node[data-c="blue"].active{border-color:var(--blue);box-shadow:0 0 40px rgba(56,189,248,.12)}
+.flow-node[data-c="purple"]::before{background:var(--purple)} .flow-node[data-c="purple"] .n-badge{background:var(--purple-d);color:var(--purple)} .flow-node[data-c="purple"].active{border-color:var(--purple);box-shadow:0 0 40px rgba(192,132,252,.12)}
+.flow-node[data-c="amber"]::before{background:var(--amber)} .flow-node[data-c="amber"] .n-badge{background:var(--amber-d);color:var(--amber)} .flow-node[data-c="amber"].active{border-color:var(--amber);box-shadow:0 0 40px rgba(251,191,36,.12)}
+.flow-node[data-c="pink"]::before{background:var(--pink)} .flow-node[data-c="pink"] .n-badge{background:var(--pink-d);color:var(--pink)} .flow-node[data-c="pink"].active{border-color:var(--pink);box-shadow:0 0 40px rgba(244,114,182,.12)}
+.flow-node[data-c="orange"]::before{background:var(--orange)} .flow-node[data-c="orange"] .n-badge{background:var(--orange-d);color:var(--orange)} .flow-node[data-c="orange"].active{border-color:var(--orange);box-shadow:0 0 40px rgba(251,146,60,.12)}
+.flow-node[data-c="cyan"]::before{background:var(--cyan)} .flow-node[data-c="cyan"] .n-badge{background:var(--cyan-d);color:var(--cyan)} .flow-node[data-c="cyan"].active{border-color:var(--cyan);box-shadow:0 0 40px rgba(34,211,238,.12)}
+.flow-node.pulse { animation:pulse .5s ease-out; }
+@keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
+
+.flow-svg { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1; }
+.flow-svg .conn { stroke:var(--border); stroke-width:1.5; fill:none; }
+.flow-svg .conn.active { stroke:var(--green); stroke-width:2.5; filter:drop-shadow(0 0 8px rgba(74,222,128,.5)); }
+.flow-svg .clabel { font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--text4); }
+.flow-svg .clabel.active { fill:var(--green); }
+.flow-svg .packet { fill:var(--green); filter:drop-shadow(0 0 10px rgba(74,222,128,.9)); opacity:0; }
+.flow-svg .packet.on { opacity:1; }
+
+.group-box { position:absolute; border:1px dashed; border-radius:18px; z-index:0; }
+.group-lbl { position:absolute; font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:2px; z-index:0; }
+
+/* ── DETAIL PANEL (below flowchart) ── */
+.detail-panel { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:32px; margin-bottom:32px; min-height:200px; transition:all .3s; }
+.detail-panel .dp-hint { text-align:center; padding:40px; color:var(--text4); font-size:14px; }
+.dp-title { font-size:22px; font-weight:700; margin-bottom:4px; }
+.dp-tech { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text3); margin-bottom:16px; }
+.dp-desc { font-size:14px; line-height:1.7; color:var(--text2); margin-bottom:20px; }
+.dp-desc strong { color:var(--text); }
+.dp-list { list-style:none; margin-bottom:20px; }
+.dp-list li { font-size:13px; color:var(--text2); padding:7px 0; border-bottom:1px solid rgba(30,41,59,.5); display:flex; gap:8px; align-items:flex-start; }
+.dp-list li::before { content:'▸'; color:var(--text4); flex-shrink:0; }
+.code { background:#080c16; border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text2); line-height:1.7; overflow-x:auto; margin-bottom:16px; white-space:pre; }
+.code .kw { color:var(--purple); } .code .str { color:var(--green); } .code .cm { color:var(--text4); } .code .fn { color:var(--blue); }
+
+/* ── SIMULATION ── */
+.sim-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:40px; }
+.sim-wrap h3 { font-size:14px; font-family:'JetBrains Mono',monospace; color:var(--text3); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px; }
+.sim-input { width:100%; padding:10px 14px; background:#080c16; border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px; resize:none; height:50px; outline:none; margin-bottom:10px; }
+.sim-input:focus { border-color:var(--green-d); }
+.sim-row { display:flex; gap:8px; margin-bottom:14px; }
+.spd-btn { flex:1; padding:7px; background:transparent; border:1px solid var(--border); color:var(--text3); font-family:'JetBrains Mono',monospace; font-size:10px; border-radius:6px; cursor:pointer; }
+.spd-btn.on { border-color:var(--blue); color:var(--blue); background:var(--blue-d); }
+.sim-go { width:100%; padding:12px; border:1px solid var(--green-d); background:rgba(22,101,52,.15); color:var(--green); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer; letter-spacing:.5px; }
+.sim-go:hover { background:rgba(22,101,52,.3); border-color:var(--green); }
+.sim-go:disabled { opacity:.4; cursor:not-allowed; }
+.sim-log { margin-top:14px; max-height:280px; overflow-y:auto; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.9; }
+.slog { color:var(--text4); padding:2px 0; opacity:0; animation:fadeIn .3s forwards; }
+.slog .sn { display:inline-block; width:24px; color:var(--text4); }
+.slog.cur { color:var(--green); }
+.slog.done { color:var(--text3); }
+@keyframes fadeIn { to{opacity:1} }
+
+/* ── FAQ / CARDS ── */
+.faq-grid { display:grid; grid-template-columns:1fr; gap:12px; }
+.faq-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.faq-q { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; font-weight:500; font-size:14px; transition:background .2s; }
+.faq-q:hover { background:var(--bg3); }
+.faq-q .fq-icon { font-size:14px; color:var(--text4); transition:transform .2s; }
+.faq-card.open .fq-icon { transform:rotate(180deg); }
+.faq-a { display:none; padding:0 20px 20px; font-size:13px; color:var(--text2); line-height:1.8; }
+.faq-card.open .faq-a { display:block; }
+.faq-a .code { margin-top:10px; }
+.faq-a table { width:100%; border-collapse:collapse; margin:12px 0; font-size:12px; }
+.faq-a th { text-align:left; padding:8px 12px; background:var(--bg3); color:var(--text2); font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid var(--border); }
+.faq-a td { padding:8px 12px; border-bottom:1px solid rgba(30,41,59,.4); vertical-align:top; }
+.faq-a td:first-child { font-family:'JetBrains Mono',monospace; color:var(--amber); font-size:11.5px; white-space:nowrap; }
+.faq-a ul { list-style:none; padding-left:0; }
+.faq-a li { padding:4px 0; display:flex; gap:8px; }
+.faq-a li::before { content:'▸'; color:var(--text4); flex-shrink:0; }
+.tag { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; padding:2px 8px; border-radius:4px; margin:2px; }
+.tag-g { background:var(--green-d); color:var(--green); }
+.tag-b { background:var(--blue-d); color:var(--blue); }
+.tag-p { background:var(--purple-d); color:var(--purple); }
+.tag-a { background:var(--amber-d); color:var(--amber); }
+.tag-o { background:var(--orange-d); color:var(--orange); }
+.tag-pk { background:var(--pink-d); color:var(--pink); }
+.tip-box { background:rgba(22,101,52,.1); border:1px solid var(--green-d); border-radius:8px; padding:12px 16px; margin:10px 0; font-size:12px; color:var(--green); }
+.warn-box { background:rgba(120,53,15,.15); border:1px solid var(--amber-d); border-radius:8px; padding:12px 16px; margin:10px 0; font-size:12px; color:var(--amber); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+  .hero h1 { font-size:28px; }
+  .flow-canvas { transform:scale(.65); transform-origin:top left; min-height:780px; }
+  .section { padding:20px 16px 40px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Claude Code</h1>
+  <p class="sub">the complete interactive guide — architecture · files · modes · power commands</p>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showTab('arch')">Architecture</button>
+  <button class="nav-btn" onclick="showTab('files')">Files &amp; Storage</button>
+  <button class="nav-btn" onclick="showTab('modes')">Modes</button>
+  <button class="nav-btn" onclick="showTab('commands')">Commands &amp; Shortcuts</button>
+  <button class="nav-btn" onclick="showTab('config')">Configuration</button>
+  <button class="nav-btn" onclick="showTab('power')">Power User</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 1: ARCHITECTURE + FLOWCHART                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section active" id="tab-arch">
+  <h2>How Claude Code Works</h2>
+  <p class="section-sub">click any node to explore · run the simulation below to trace a prompt through the system</p>
+
+  <div class="flow-canvas" id="canvas">
+    <!-- Groups -->
+    <div class="group-box" style="left:80px;top:240px;width:680px;height:370px;border-color:rgba(30,41,59,.5);"></div>
+    <div class="group-lbl" style="left:100px;top:250px;color:var(--text4);">Node.js Process</div>
+    <div class="group-box" style="left:80px;top:700px;width:380px;height:280px;border-color:rgba(251,146,60,.2);"></div>
+    <div class="group-lbl" style="left:100px;top:710px;color:var(--orange);">Local Machine</div>
+    <div class="group-box" style="left:500px;top:700px;width:340px;height:380px;border-color:rgba(192,132,252,.2);"></div>
+    <div class="group-lbl" style="left:520px;top:710px;color:var(--purple);">Anthropic Cloud</div>
+
+    <svg class="flow-svg" id="connSvg"></svg>
+
+    <!-- NODES — well spaced -->
+    <div class="flow-node" data-id="user" data-c="green" style="left:280px;top:20px;">
+      <div class="n-icon">⌨️</div>
+      <div class="n-label">You (Developer)</div>
+      <div class="n-tech">Bash / Zsh / PowerShell terminal</div>
+      <span class="n-badge">entry point</span>
+    </div>
+    <div class="flow-node" data-id="cli" data-c="blue" style="left:280px;top:150px;">
+      <div class="n-icon">▶</div>
+      <div class="n-label">Claude CLI Wrapper</div>
+      <div class="n-tech">/usr/local/bin/claude → shell script</div>
+      <span class="n-badge">npm global binary</span>
+    </div>
+    <div class="flow-node" data-id="node" data-c="green" style="left:100px;top:300px;">
+      <div class="n-icon">⬡</div>
+      <div class="n-label">Node.js Runtime</div>
+      <div class="n-tech">V8 Engine · Event Loop · libuv · JIT</div>
+      <span class="n-badge">execution engine</span>
+    </div>
+    <div class="flow-node" data-id="app" data-c="amber" style="left:460px;top:300px;">
+      <div class="n-icon">📦</div>
+      <div class="n-label">Claude Code App</div>
+      <div class="n-tech">TypeScript · @anthropic-ai/claude-code</div>
+      <span class="n-badge">core orchestrator</span>
+    </div>
+    <div class="flow-node" data-id="tui" data-c="pink" style="left:100px;top:470px;">
+      <div class="n-icon">🖥</div>
+      <div class="n-label">Terminal UI</div>
+      <div class="n-tech">Ink (React for CLI) · Chalk · Spinners</div>
+      <span class="n-badge">display layer</span>
+    </div>
+    <div class="flow-node" data-id="tools" data-c="orange" style="left:460px;top:470px;">
+      <div class="n-icon">🔧</div>
+      <div class="n-label">Tool Executor</div>
+      <div class="n-tech">File Read/Write · Shell · Grep · LSP · MCP</div>
+      <span class="n-badge">local actions</span>
+    </div>
+    <div class="flow-node" data-id="fs" data-c="orange" style="left:100px;top:740px;">
+      <div class="n-icon">📂</div>
+      <div class="n-label">Your Codebase</div>
+      <div class="n-tech">Read · Write · Patch · Grep · Search files</div>
+      <span class="n-badge">filesystem</span>
+    </div>
+    <div class="flow-node" data-id="bash" data-c="orange" style="left:100px;top:890px;">
+      <div class="n-icon">⚙️</div>
+      <div class="n-label">Subprocesses</div>
+      <div class="n-tech">bash · npm · pytest · git · make · ruff</div>
+      <span class="n-badge">child_process</span>
+    </div>
+    <div class="flow-node" data-id="apiclient" data-c="cyan" style="left:460px;top:740px;">
+      <div class="n-icon">🔌</div>
+      <div class="n-label">API Client</div>
+      <div class="n-tech">HTTPS · SSE Streaming · Retries · Auth</div>
+      <span class="n-badge">network layer</span>
+    </div>
+    <div class="flow-node" data-id="api" data-c="purple" style="left:520px;top:890px;">
+      <div class="n-icon">🧠</div>
+      <div class="n-label">Anthropic API</div>
+      <div class="n-tech">Claude model · /v1/messages · Tool use</div>
+      <span class="n-badge">inference</span>
+    </div>
+    <div class="flow-node" data-id="context" data-c="purple" style="left:520px;top:1030px;">
+      <div class="n-icon">🗂</div>
+      <div class="n-label">Context Window</div>
+      <div class="n-tech">System prompt · History · Tool results · CLAUDE.md</div>
+      <span class="n-badge">200k tokens</span>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="dp-hint">👆 Click any node above to see detailed information about that component</div>
+  </div>
+
+  <div class="sim-wrap">
+    <h3>⚡ Prompt Simulation</h3>
+    <textarea class="sim-input" id="simInput" placeholder='Type a prompt, e.g. "Fix the bug in auth.py"'></textarea>
+    <div class="sim-row">
+      <button class="spd-btn on" data-s="1200" onclick="setSpd(this)">Slow</button>
+      <button class="spd-btn" data-s="700" onclick="setSpd(this)">Normal</button>
+      <button class="spd-btn" data-s="350" onclick="setSpd(this)">Fast</button>
+    </div>
+    <button class="sim-go" id="simBtn" onclick="runSim()">▶ Simulate Prompt Flow</button>
+    <div class="sim-log" id="simLog"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 2: FILES & STORAGE                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section" id="tab-files">
+  <h2>Files &amp; Storage</h2>
+  <p class="section-sub">every file and directory claude code uses on your machine</p>
+
+  <div class="faq-grid" id="faq-files"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 3: MODES                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section" id="tab-modes">
+  <h2>Modes</h2>
+  <p class="section-sub">permission modes and thinking modes that change how claude code operates</p>
+
+  <div class="faq-grid" id="faq-modes"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 4: COMMANDS & SHORTCUTS                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section" id="tab-commands">
+  <h2>Commands &amp; Shortcuts</h2>
+  <p class="section-sub">slash commands, keyboard shortcuts, and cli flags</p>
+
+  <div class="faq-grid" id="faq-commands"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 5: CONFIGURATION                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section" id="tab-config">
+  <h2>Configuration Deep Dive</h2>
+  <p class="section-sub">settings.json properties, CLAUDE.md, MCP servers, hooks, and permissions</p>
+
+  <div class="faq-grid" id="faq-config"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 6: POWER USER                                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section" id="tab-power">
+  <h2>Power User Skills</h2>
+  <p class="section-sub">advanced workflows, hidden features, and expert techniques</p>
+
+  <div class="faq-grid" id="faq-power"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'arch') setTimeout(drawConns, 50);
+}
+
+// ═══════════════════════════════════════════════════════
+// NODE DETAILS DATA
+// ═══════════════════════════════════════════════════════
+const ND = {
+  user: { title:"You (Developer)", tech:"Bash / Zsh / PowerShell", color:"green",
+    desc:"You type a natural language prompt in your terminal. Claude Code reads your input and begins processing. The terminal is your only interface — no browser, no GUI.",
+    items:["Launch with <code>claude</code> in any project directory","Interactive REPL mode or single-shot: <code>claude -p 'fix the bug'</code>","Supports piping: <code>cat error.log | claude 'explain this'</code>","Multi-line input with <code>\\+Enter</code> or <code>Shift+Enter</code> (after /terminal-setup)","Up/down arrows for prompt history","<code>#</code> key opens instruction prompt that updates CLAUDE.md","<code>Esc Esc</code> (double-escape) to rewind and edit last prompt"],
+    code:`<span class="cm"># Interactive session</span>\n$ <span class="kw">claude</span>\n\n<span class="cm"># Single prompt (headless)</span>\n$ <span class="kw">claude -p</span> <span class="str">"refactor the auth module"</span>\n\n<span class="cm"># Continue last session</span>\n$ <span class="kw">claude -c</span>\n\n<span class="cm"># Pipe context in</span>\n$ git diff | <span class="kw">claude</span> <span class="str">"review this PR"</span>` },
+  cli: { title:"Claude CLI Wrapper", tech:"/usr/local/bin/claude", color:"blue",
+    desc:"When you type <code>claude</code>, your shell finds this wrapper script installed by npm. It's a thin shim that invokes Node.js with the correct entry point of the Claude Code package.",
+    items:["Installed globally: <code>npm install -g @anthropic-ai/claude-code</code>","Alternative: <code>curl -sL https://install.anthropic.com | sh</code>","Shell script at /usr/local/bin/claude (or ~/.npm-global/bin/claude)","Passes through all CLI arguments, flags, and stdin","Handles version checks: <code>claude --version</code>","Health check: <code>claude doctor</code>"],
+    code:`<span class="cm"># Install</span>\nnpm i -g @anthropic-ai/claude-code\n\n<span class="cm"># Or via curl</span>\ncurl -sL https://install.anthropic.com | sh\n\n<span class="cm"># Check health</span>\nclaude doctor` },
+  node: { title:"Node.js Runtime", tech:"V8 · Event Loop · libuv", color:"green",
+    desc:"Node.js is the execution engine. V8 compiles TypeScript/JavaScript to machine code via JIT. The event loop handles async operations — API calls, file I/O, subprocess management — all concurrently on a single thread.",
+    items:["V8 JIT compiles JavaScript → optimized machine code","Event loop enables non-blocking I/O (critical for streaming)","libuv provides cross-platform async primitives","Handles thousands of concurrent ops without threading","Provides fs, child_process, net, http modules","Requires Node.js 20+ (22+ recommended)"],
+    code:`<span class="cm">// Event loop handles all concurrently:</span>\n<span class="kw">await</span> Promise.all([\n  streamAPIResponse(),     <span class="cm">// network</span>\n  readProjectFiles(),      <span class="cm">// filesystem</span>\n  runSubprocess(<span class="str">'npm test'</span>), <span class="cm">// child proc</span>\n  updateTerminalUI()       <span class="cm">// stdout</span>\n])` },
+  app: { title:"Claude Code App", tech:"TypeScript · npm package", color:"amber",
+    desc:"The core application. Written in TypeScript for type safety. This is the <strong>orchestrator</strong> — it coordinates Terminal UI, Tool Executor, and API Client. Manages the agentic loop, tool dispatch, permission system, and configuration.",
+    items:["Manages the agentic loop: prompt → API → tool calls → repeat","Conversation state management (message history + context)","Permission system — asks before writes/commands","Loads config: settings.json, CLAUDE.md, .mcp.json","Tool registration and dispatch system","Handles /slash commands and keyboard shortcuts","Compaction: summarizes context when window fills up"],
+    code:`<span class="cm">// The agentic loop (simplified)</span>\n<span class="kw">while</span> (!done) {\n  response = <span class="kw">await</span> <span class="fn">api.stream</span>(messages)\n  <span class="kw">if</span> (response.hasToolCalls) {\n    results = <span class="kw">await</span> <span class="fn">executor.run</span>(response.tools)\n    messages.push(results)\n  } <span class="kw">else</span> {\n    <span class="fn">display</span>(response.text)\n    done = <span class="kw">true</span>\n  }\n}` },
+  tui: { title:"Terminal UI", tech:"Ink · Chalk · React for CLI", color:"pink",
+    desc:"The visual layer in your terminal. Built with <strong>Ink</strong> — a React renderer for terminals. The CLI UI is a React component tree rendering to stdout instead of a browser DOM.",
+    items:["Ink — React components rendered to terminal output","Chalk for colored text (green diffs, red errors, etc.)","Streaming text display with real-time token rendering","Diff views for file changes (before/after highlighting)","Permission prompts (Y/n) for tool approvals","Spinner animations during API calls","Markdown rendering in terminal (bold, code blocks, lists)"],
+    code:`<span class="cm">// Conceptually, the UI is React:</span>\n<span class="kw">&lt;Box</span> flexDirection=<span class="str">"column"</span><span class="kw">&gt;</span>\n  <span class="kw">&lt;Spinner</span> text=<span class="str">"Thinking..."</span> /&gt;\n  <span class="kw">&lt;StreamingText</span> content={response} /&gt;\n  <span class="kw">&lt;DiffView</span> file=<span class="str">"auth.py"</span> /&gt;\n  <span class="kw">&lt;PermissionPrompt</span>\n    action=<span class="str">"Edit auth.py"</span>\n    onApprove={execute} /&gt;\n<span class="kw">&lt;/Box&gt;</span>` },
+  tools: { title:"Tool Executor", tech:"File I/O · Shell · Grep · MCP", color:"orange",
+    desc:"When Claude decides to take an action (read a file, run a command, edit code), the Tool Executor handles it. Each tool runs locally on your machine and returns results back to the model.",
+    items:["<strong>Read</strong> — read file contents with line numbers","<strong>Edit</strong> — surgical find-and-replace edits","<strong>Write</strong> — create or overwrite files","<strong>Bash</strong> — execute shell commands","<strong>Grep</strong> — search across your codebase","<strong>LS</strong> — explore project structure","<strong>WebFetch</strong> — fetch web content","<strong>MCP tools</strong> — external integrations (GitHub, DB, browser)","All tools require user permission (unless auto-accept)","Results sent back to API as tool_result messages"],
+    code:`<span class="cm">// Tool call from the model</span>\n{\n  name: <span class="str">"Edit"</span>,\n  input: {\n    file_path: <span class="str">"src/auth.py"</span>,\n    old_string: <span class="str">"if token == None:"</span>,\n    new_string: <span class="str">"if token is None:"</span>\n  }\n}` },
+  fs: { title:"Your Codebase", tech:"Read · Write · Patch · Search", color:"orange",
+    desc:"Your actual project files on disk. Claude Code reads source code to build context, writes changes when editing, and searches with grep/ripgrep. All operations via Node.js fs module.",
+    items:["Reads source files to include in API context","Writes new files or modifications","Patches existing files with surgical str-replace edits","Searches with ripgrep for code patterns","Respects .gitignore for file discovery","Git integration for diffs, commits, branches"],
+    code:`<span class="cm"># What happens under the hood:</span>\n$ <span class="kw">cat</span> src/auth.py            <span class="cm"># Read tool</span>\n$ <span class="kw">rg</span> <span class="str">"def authenticate"</span> src/  <span class="cm"># Grep tool</span>\n$ <span class="kw">find</span> . -name <span class="str">"*.py"</span>         <span class="cm"># LS tool</span>\n$ <span class="kw">git diff</span> HEAD~1             <span class="cm"># Bash tool</span>` },
+  bash: { title:"Subprocesses", tech:"bash · npm · pytest · git", color:"orange",
+    desc:"Claude Code spawns child processes to run any shell command — tests, linters, build tools, git operations. These run as real processes on your machine via Node.js <code>child_process</code> module.",
+    items:["Tests: pytest, jest, npm test, cargo test","Git: git diff, git log, git commit, git push","Package mgmt: npm install, pip install","Build: webpack, tsc, make, cargo build","Linters: eslint, ruff, mypy, prettier","Output captured and returned to Claude as context","Working directory persists across commands","Env vars do NOT persist across commands"],
+    code:`<span class="cm">// Node.js spawns real processes</span>\n<span class="kw">const</span> { stdout, stderr } = <span class="kw">await</span> <span class="fn">exec</span>(\n  <span class="str">'pytest tests/ -v'</span>,\n  { cwd: projectRoot, timeout: 30000 }\n)\n<span class="cm">// stdout/stderr → tool_result → API</span>` },
+  apiclient: { title:"API Client", tech:"HTTPS · SSE · Retries · Auth", color:"cyan",
+    desc:"Handles all communication with Anthropic's servers. Sends conversation (prompt + context + tool results) and receives streaming responses via Server-Sent Events (SSE).",
+    items:["HTTPS POST to api.anthropic.com/v1/messages","Server-Sent Events (SSE) for token-by-token streaming","Automatic retries with exponential backoff","Handles rate limiting (429s) gracefully","API key auth via ANTHROPIC_API_KEY","Serializes tool results into conversation format","Tracks token usage and context window limits","Supports model switching mid-session"],
+    code:`<span class="cm">// Streaming API call</span>\n<span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://api.anthropic.com/v1/messages"</span>, {\n  method: <span class="str">"POST"</span>,\n  headers: { <span class="str">"x-api-key"</span>: key },\n  body: JSON.stringify({\n    model: <span class="str">"claude-sonnet-4-5-20250514"</span>,\n    messages, tools, stream: <span class="kw">true</span>\n  })\n})` },
+  api: { title:"Anthropic API", tech:"Claude Model · /v1/messages", color:"purple",
+    desc:"The server-side inference endpoint. Receives full conversation context, runs through Claude model, returns text or <strong>tool_use</strong> blocks requesting actions. This is the \"brain\" — all intelligence lives here.",
+    items:["Runs Claude model inference on Anthropic's GPU clusters","Processes system prompt + conversation + tool definitions","Returns text blocks (responses) or tool_use blocks (actions)","Supports extended thinking for complex reasoning","Model decides WHICH tool to call with WHAT arguments","Streaming: tokens sent as they're generated","Stateless — full context must be sent every request","Supports Sonnet, Opus, Haiku model selection"],
+    code:`<span class="cm">// API response with tool use</span>\n{\n  <span class="str">"content"</span>: [{\n    <span class="str">"type"</span>: <span class="str">"tool_use"</span>,\n    <span class="str">"name"</span>: <span class="str">"Edit"</span>,\n    <span class="str">"input"</span>: {\n      <span class="str">"file_path"</span>: <span class="str">"src/auth.py"</span>,\n      <span class="str">"old_string"</span>: <span class="str">"== None"</span>,\n      <span class="str">"new_string"</span>: <span class="str">"is None"</span>\n    }\n  }]\n}` },
+  context: { title:"Context Window", tech:"System Prompt · History · Tools", color:"purple",
+    desc:"Everything the model sees in a single request. Claude is <strong>stateless</strong> — every API call includes the full conversation history, system prompt, CLAUDE.md, and all tool results. The context window is the model's entire working memory.",
+    items:["200K token context window (Sonnet/Opus)","System prompt: Claude Code's instructions + tool definitions","CLAUDE.md files loaded at startup (global + project)","Conversation history: all user prompts + assistant responses","Tool results: output from file reads, command execution","Auto-compaction: /compact summarizes when context fills","Each API call sends the FULL context — no server memory","CLAUDE.md survives compaction (re-injected fresh)"],
+    code:`<span class="cm">// What gets sent each request:</span>\n{\n  system: <span class="str">"You are Claude Code..."</span> + CLAUDE_MD,\n  tools: [Read, Edit, Write, Bash, Grep, LS, ...],\n  messages: [\n    { role: <span class="str">"user"</span>, content: prompt },\n    { role: <span class="str">"assistant"</span>, content: toolCall },\n    { role: <span class="str">"user"</span>, content: toolResult },\n    <span class="cm">// ...entire history</span>\n  ]\n}` }
+};
+
+// ═══════════════════════════════════════════════════════
+// CONNECTIONS
+// ═══════════════════════════════════════════════════════
+const CONNS = [
+  {f:"user",t:"cli",la:"types 'claude'",fa:"bottom",ta:"top"},
+  {f:"cli",t:"node",la:"invokes node",fa:"bottom",ta:"top"},
+  {f:"cli",t:"app",la:"",fa:"bottom",ta:"top"},
+  {f:"node",t:"app",la:"executes",fa:"right",ta:"left"},
+  {f:"node",t:"tui",la:"renders",fa:"bottom",ta:"top"},
+  {f:"app",t:"tui",la:"updates UI",fa:"left",ta:"right"},
+  {f:"app",t:"tools",la:"dispatches",fa:"bottom",ta:"top"},
+  {f:"tools",t:"fs",la:"",fa:"bottom",ta:"top"},
+  {f:"tools",t:"bash",la:"",fa:"bottom",ta:"top"},
+  {f:"tools",t:"apiclient",la:"results",fa:"bottom",ta:"top"},
+  {f:"apiclient",t:"api",la:"HTTPS stream",fa:"bottom",ta:"top"},
+  {f:"api",t:"context",la:"builds",fa:"bottom",ta:"top"},
+  {f:"api",t:"apiclient",la:"response / tool_use",fa:"left",ta:"right"},
+];
+
+function anchorPt(el, a) {
+  const r=el.getBoundingClientRect(), cr=document.getElementById('canvas').getBoundingClientRect();
+  const x=r.left-cr.left, y=r.top-cr.top, w=r.width, h=r.height;
+  const m={top:{x:x+w/2,y}, bottom:{x:x+w/2,y:y+h}, left:{x,y:y+h/2}, right:{x:x+w,y:y+h/2}};
+  return m[a]||m.bottom;
+}
+
+function drawConns() {
+  const svg=document.getElementById('connSvg'); svg.innerHTML='';
+  const NS='http://www.w3.org/2000/svg';
+  // markers
+  ['arr','arr-a'].forEach((id,i)=>{
+    const d=document.createElementNS(NS,'defs');
+    const m=document.createElementNS(NS,'marker');
+    m.setAttribute('id',id); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','6');
+    m.setAttribute('refX','8'); m.setAttribute('refY','3'); m.setAttribute('orient','auto');
+    const p=document.createElementNS(NS,'polygon');
+    p.setAttribute('points','0 0, 8 3, 0 6'); p.setAttribute('fill',i?'#4ade80':'#334155');
+    m.appendChild(p); d.appendChild(m); svg.appendChild(d);
+  });
+
+  CONNS.forEach((c,i)=>{
+    const fe=document.querySelector(`[data-id="${c.f}"]`), te=document.querySelector(`[data-id="${c.t}"]`);
+    if(!fe||!te) return;
+    const p1=anchorPt(fe,c.fa||'bottom'), p2=anchorPt(te,c.ta||'top');
+    const dx=p2.x-p1.x, dy=p2.y-p1.y;
+    const path=document.createElementNS(NS,'path');
+    const d=`M${p1.x},${p1.y} C${p1.x+dx*.15},${p1.y+dy*.5} ${p2.x-dx*.15},${p2.y-dy*.5} ${p2.x},${p2.y}`;
+    path.setAttribute('d',d); path.setAttribute('class','conn'); path.id=`c${i}`;
+    path.setAttribute('marker-end','url(#arr)'); svg.appendChild(path);
+    if(c.la){
+      const t=document.createElementNS(NS,'text');
+      t.setAttribute('x',(p1.x+p2.x)/2); t.setAttribute('y',(p1.y+p2.y)/2-6);
+      t.setAttribute('text-anchor','middle'); t.setAttribute('class','clabel'); t.id=`cl${i}`;
+      t.textContent=c.la; svg.appendChild(t);
+    }
+    const ci=document.createElementNS(NS,'circle');
+    ci.setAttribute('class','packet'); ci.setAttribute('r','5'); ci.id=`pk${i}`;
+    svg.appendChild(ci);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// NODE CLICK → DETAIL
+// ═══════════════════════════════════════════════════════
+function showDetail(id) {
+  const d=ND[id]; if(!d) return;
+  const p=document.getElementById('detailPanel');
+  p.innerHTML=`<div class="dp-title" style="color:var(--${d.color})">${d.title}</div>
+    <div class="dp-tech">${d.tech}</div>
+    <div class="dp-desc">${d.desc}</div>
+    <ul class="dp-list">${d.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    ${d.code?`<div class="code">${d.code}</div>`:''}`;
+}
+document.querySelectorAll('.flow-node').forEach(n=>{
+  n.addEventListener('click',()=>{
+    document.querySelectorAll('.flow-node').forEach(x=>x.classList.remove('active'));
+    n.classList.add('active'); showDetail(n.dataset.id);
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+// SIMULATION
+// ═══════════════════════════════════════════════════════
+let simRun=false, simSpd=1200;
+function setSpd(b){document.querySelectorAll('.spd-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');simSpd=+b.dataset.s;}
+
+async function animPkt(i){
+  const p=document.getElementById(`c${i}`), pk=document.getElementById(`pk${i}`);
+  if(!p||!pk) return;
+  p.classList.add('active'); p.setAttribute('marker-end','url(#arr-a)');
+  const lb=document.getElementById(`cl${i}`); if(lb) lb.classList.add('active');
+  pk.classList.add('on');
+  const len=p.getTotalLength(), dur=simSpd*.6, t0=performance.now();
+  await new Promise(r=>{
+    (function tick(now){
+      const t=Math.min((now-t0)/dur,1), e=t<.5?2*t*t:-1+(4-2*t)*t;
+      const pt=p.getPointAtLength(e*len); pk.setAttribute('cx',pt.x); pk.setAttribute('cy',pt.y);
+      t<1?requestAnimationFrame(tick):(() => { pk.classList.remove('on');
+        setTimeout(()=>{p.classList.remove('active');p.setAttribute('marker-end','url(#arr)');if(lb)lb.classList.remove('active');},simSpd*.3);r();})();
+    })(performance.now());
+  });
+}
+
+function simSteps(pr){
+  const p=pr||"Fix the bug in auth.py";
+  return [
+    {n:"user",t:`You type: "${p}"`,h:["user"]},
+    {n:"cli",t:"Shell resolves 'claude' → /usr/local/bin/claude",h:["user","cli"],e:0},
+    {n:"node",t:"Node.js V8 engine starts, loads TypeScript app",h:["cli","node"],e:1},
+    {n:"app",t:"Claude Code app receives prompt, begins processing",h:["node","app"],e:3},
+    {n:"tui",t:"Terminal UI shows spinner: 'Thinking...'",h:["app","tui"],e:5},
+    {n:"app",t:"App builds context: system prompt + tools + CLAUDE.md + your prompt",h:["app"]},
+    {n:"apiclient",t:"API Client prepares HTTPS request with full context",h:["app","apiclient"]},
+    {n:"api",t:"Request streamed to Anthropic API → Claude model processes",h:["apiclient","api"],e:10},
+    {n:"context",t:"Context window: system prompt + tool defs + CLAUDE.md + prompt",h:["api","context"],e:11},
+    {n:"api",t:"Model decides: need to read auth.py first → returns tool_use",h:["api"]},
+    {n:"apiclient",t:"API Client receives tool_use response via SSE stream",h:["api","apiclient"],e:12},
+    {n:"tools",t:"Tool Executor dispatched: Read('src/auth.py')",h:["app","tools"],e:6},
+    {n:"tui",t:"UI shows: 'Reading src/auth.py'",h:["tui"]},
+    {n:"fs",t:"Node.js fs module reads file from disk",h:["tools","fs"],e:7},
+    {n:"tools",t:"File contents returned as tool_result",h:["tools"]},
+    {n:"apiclient",t:"Tool result added to messages, new API call",h:["tools","apiclient"],e:9},
+    {n:"api",t:"Model sees file, identifies bug → returns Edit tool_use",h:["apiclient","api"],e:10},
+    {n:"tui",t:"UI shows permission prompt: 'Edit src/auth.py? (Y/n)'",h:["tui"]},
+    {n:"user",t:"You press 'Y' to approve the edit",h:["user"]},
+    {n:"tools",t:"Tool Executor applies edit: == None → is None",h:["tools"]},
+    {n:"fs",t:"File written to disk with fix applied ✓",h:["tools","fs"],e:7},
+    {n:"app",t:"App decides to verify fix by running tests",h:["app"]},
+    {n:"tools",t:"Tool Executor: Bash('pytest tests/test_auth.py -v')",h:["app","tools"],e:6},
+    {n:"bash",t:"pytest subprocess runs → all tests pass ✓",h:["tools","bash"],e:8},
+    {n:"apiclient",t:"Test results sent to API for final response",h:["tools","apiclient"],e:9},
+    {n:"api",t:"Model generates summary of changes + test results",h:["apiclient","api"],e:10},
+    {n:"tui",t:"'Fixed None comparison in auth.py. All tests passing.'",h:["tui"]},
+    {n:"user",t:"Done! You see the result in your terminal ✓",h:["user"]},
+  ];
+}
+
+async function runSim(){
+  if(simRun) return; simRun=true;
+  const btn=document.getElementById('simBtn'); btn.disabled=true; btn.textContent='⏳ Running...';
+  const log=document.getElementById('simLog'); log.innerHTML='';
+  const steps=simSteps(document.getElementById('simInput').value);
+  for(let i=0;i<steps.length;i++){
+    const s=steps[i];
+    document.querySelectorAll('.flow-node').forEach(n=>n.classList.remove('active','pulse'));
+    s.h.forEach(id=>{const el=document.querySelector(`[data-id="${id}"]`);if(el)el.classList.add('active','pulse');});
+    showDetail(s.n);
+    if(s.e!==undefined) animPkt(s.e);
+    const e=document.createElement('div'); e.className='slog cur';
+    e.innerHTML=`<span class="sn">${String(i+1).padStart(2,'0')}</span> ${s.t}`;
+    log.appendChild(e); log.scrollTop=log.scrollHeight;
+    log.querySelectorAll('.slog').forEach((x,j)=>{if(j<log.children.length-1){x.classList.remove('cur');x.classList.add('done');}});
+    await new Promise(r=>setTimeout(r,simSpd));
+  }
+  document.querySelectorAll('.flow-node').forEach(n=>n.classList.remove('active','pulse'));
+  simRun=false; btn.disabled=false; btn.textContent='▶ Simulate Prompt Flow';
+}
+
+// ═══════════════════════════════════════════════════════
+// FAQ DATA — FILES & STORAGE
+// ═══════════════════════════════════════════════════════
+const FAQ_FILES = [
+  { q:"Where are conversations/chats saved?", a:`Claude Code saves every conversation as JSONL files organized by project path:
+
+<div class="code">~/.claude/
+├── history.jsonl          <span class="cm"># metadata index of all sessions</span>
+├── projects/              <span class="cm"># actual conversation transcripts</span>
+│   ├── -home-user-myproject/
+│   │   ├── session-abc123.jsonl
+│   │   └── session-def456.jsonl
+│   └── -home-user-other-project/
+│       └── session-ghi789.jsonl
+├── session-env/           <span class="cm"># session environment data</span>
+└── todos/                 <span class="cm"># task lists per session (JSON)</span></div>
+
+<ul>
+<li>Path encoding: <code>/home/user/myproject</code> becomes <code>-home-user-myproject</code></li>
+<li>Each session is a <code>.jsonl</code> file (one JSON object per line per event)</li>
+<li>Use <code>claude -c</code> to continue last session, <code>/resume</code> to pick from a list</li>
+<li><code>history.jsonl</code> is the global index — metadata only, not full transcripts</li>
+<li>Default retention: 30 days (configurable via <code>cleanupPeriodDays</code> in settings)</li>
+</ul>
+<div class="tip-box">💡 Pro tip: Use <code>/export</code> to save a conversation to a file or clipboard before it expires.</div>` },
+
+  { q:"What are all the important files and directories?", a:`<table>
+<tr><th>File / Directory</th><th>Purpose</th></tr>
+<tr><td>~/.claude.json</td><td>Global config — API key trust, onboarding state, theme, MCP servers per project</td></tr>
+<tr><td>~/.claude/settings.json</td><td>User-level settings — permissions, env vars, hooks (applies to all projects)</td></tr>
+<tr><td>~/.claude/CLAUDE.md</td><td>Global instructions loaded into every session</td></tr>
+<tr><td>~/.claude/commands/</td><td>Personal slash commands (available in all projects)</td></tr>
+<tr><td>~/.claude/skills/</td><td>Personal skills (model-invoked capabilities)</td></tr>
+<tr><td>~/.claude/projects/</td><td>All conversation transcripts organized by project path</td></tr>
+<tr><td>~/.claude/projects/&lt;project&gt;/memory/</td><td>Auto-memory — MEMORY.md + topic files Claude writes</td></tr>
+<tr><td>~/.claude/todos/</td><td>Task lists per session (TodoWrite tool output)</td></tr>
+<tr><td>~/.claude/local/</td><td>Claude CLI binary + node_modules runtime dependencies</td></tr>
+<tr><td>.claude/settings.json</td><td>Project settings (checked into git, shared with team)</td></tr>
+<tr><td>.claude/settings.local.json</td><td>Local project settings (gitignored, personal tweaks)</td></tr>
+<tr><td>.claude/commands/</td><td>Project slash commands (shared with team)</td></tr>
+<tr><td>.claude/skills/</td><td>Project skills (shared with team)</td></tr>
+<tr><td>.mcp.json</td><td>Project MCP server configuration (checked into git)</td></tr>
+<tr><td>~/.mcp.json</td><td>Global MCP servers (available in all projects)</td></tr>
+<tr><td>CLAUDE.md</td><td>Project root instructions — loaded at start of every session</td></tr>
+</table>
+<div class="warn-box">⚠️ <code>~/.claude.json</code> may contain API key trust data. Set proper file permissions on shared systems.</div>` },
+
+  { q:"What is CLAUDE.md and how does it work?", a:`CLAUDE.md is a markdown file that gives Claude persistent instructions for a project. It's loaded at the start of every session and <strong>survives compaction</strong> (re-read from disk after /compact).
+
+<ul>
+<li><strong>~/.claude/CLAUDE.md</strong> — global instructions (all projects)</li>
+<li><strong>CLAUDE.md</strong> in project root — project-specific instructions</li>
+<li><strong>CLAUDE.md</strong> in subdirectories — loaded when working in those dirs</li>
+<li>More specific locations override broader ones</li>
+<li>Press <code>#</code> during a session to add instructions that auto-update CLAUDE.md</li>
+<li>Run <code>/init</code> to have Claude generate a CLAUDE.md by analyzing your project</li>
+</ul>
+
+<div class="tip-box">💡 Keep CLAUDE.md concise. First 200 lines of MEMORY.md load at startup. CLAUDE.md loads in full but shorter = better adherence.</div>` },
+
+  { q:"What is auto-memory and how does it work?", a:`Claude Code can automatically remember things across sessions without you writing to CLAUDE.md manually.
+
+<div class="code">~/.claude/projects/&lt;project&gt;/memory/
+├── MEMORY.md          <span class="cm"># index (first 200 lines loaded at startup)</span>
+├── debugging.md       <span class="cm"># detailed notes on debugging patterns</span>
+├── api-conventions.md <span class="cm"># API design decisions</span>
+└── ...</div>
+
+<ul>
+<li>On by default — toggle via <code>/memory</code> or <code>autoMemoryEnabled</code> in settings</li>
+<li>Claude decides what's worth remembering based on usefulness for future sessions</li>
+<li>Machine-local — not shared across machines or cloud</li>
+<li>All worktrees in same git repo share one memory directory</li>
+<li>Topic files (debugging.md etc.) are NOT loaded at startup — read on demand</li>
+<li>Disable via env: <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY=1</code></li>
+<li>Browse what Claude saved: <code>/memory</code> → select auto memory folder</li>
+</ul>` },
+
+  { q:"Managed settings — enterprise deployment", a:`For organizations, managed settings provide an override layer that users cannot change:
+
+<div class="code"><span class="cm"># Location varies by OS:</span>
+Linux/WSL: /etc/claude-code/managed-settings.json
+macOS:     /Library/Application Support/ClaudeCode/managed-settings.json
+Windows:   C:\\ProgramData\\ClaudeCode\\managed-settings.json</div>
+
+<ul>
+<li>Cannot be overridden by user or project settings</li>
+<li>Perfect for enterprise security policies</li>
+<li>Same JSON format as settings.json</li>
+<li>Also supports <code>managed-mcp.json</code> for MCP server policies</li>
+<li>Can enforce <code>disableBypassPermissionsMode</code></li>
+<li>Can restrict MCP servers via <code>allowedMcpServers</code> / <code>deniedMcpServers</code></li>
+</ul>` },
+];
+
+// ═══════════════════════════════════════════════════════
+// FAQ DATA — MODES
+// ═══════════════════════════════════════════════════════
+const FAQ_MODES = [
+  { q:"What are the permission modes?", a:`Claude Code has 3 permission modes you cycle through with <code>Shift+Tab</code>:
+
+<table>
+<tr><th>Mode</th><th>Indicator</th><th>Behavior</th></tr>
+<tr><td>Normal (default)</td><td>Standard prompt</td><td>Asks permission for each tool use (read, write, bash). You approve with Y/n.</td></tr>
+<tr><td>Auto-Accept</td><td>⏵⏵ accept edits on</td><td>Automatically approves file edits. Still asks for bash commands. Good for trusted refactoring.</td></tr>
+<tr><td>Plan Mode</td><td>⏸ plan mode on</td><td>Read-only analysis. Claude can read files and grep but cannot modify files or run commands. Perfect for codebase exploration and planning.</td></tr>
+</table>
+
+<ul>
+<li><strong>Shift+Tab</strong> cycles: Normal → Auto-Accept → Plan → Normal</li>
+<li>Start in plan mode: <code>claude --permission-mode plan</code></li>
+<li>Enter mid-session: <code>/plan</code></li>
+<li>In Plan Mode, Claude uses <code>AskUserQuestion</code> to gather requirements before proposing</li>
+<li>Press <code>Ctrl+G</code> to open the plan in your text editor for direct editing</li>
+</ul>
+<div class="tip-box">💡 Plan Mode is ideal for multi-step implementation, code exploration, and iterating on direction before committing to changes.</div>` },
+
+  { q:"What is YOLO / bypass permissions mode?", a:`<div class="warn-box">⚠️ Use with extreme caution — only in sandboxed/containerized environments</div>
+
+<ul>
+<li><code>claude --dangerously-skip-permissions</code> — bypasses ALL permission prompts</li>
+<li>Claude will read, write, delete files and run any bash command without asking</li>
+<li>Equivalent to Cursor's old "YOLO mode"</li>
+<li>Useful in CI/CD pipelines, Docker containers, throwaway environments</li>
+<li>Can be blocked enterprise-wide: <code>"disableBypassPermissionsMode": "disable"</code> in managed settings</li>
+<li>The <code>defaultMode</code> setting supports: <code>default</code>, <code>acceptEdits</code>, <code>plan</code>, <code>bypassPermissions</code></li>
+</ul>` },
+
+  { q:"What is Extended Thinking?", a:`Extended thinking gives Claude space to reason through complex problems step-by-step before responding.
+
+<ul>
+<li>Enabled by default on supported models</li>
+<li>Toggle visibility with <code>Ctrl+O</code> (verbose mode — shows thinking)</li>
+<li>Opus 4.6 supports <strong>adaptive reasoning</strong> — dynamically allocates thinking tokens based on complexity</li>
+<li>Valuable for: complex architecture decisions, challenging bugs, multi-step planning, evaluating trade-offs</li>
+<li>Prompts like "think", "think hard", "ultrathink" are interpreted as instructions (they don't allocate thinking tokens directly)</li>
+</ul>` },
+
+  { q:"What is Headless Mode?", a:`Headless mode (<code>-p</code> flag) runs Claude without interactive UI — perfect for automation.
+
+<div class="code"><span class="cm"># One-shot query</span>
+claude <span class="kw">-p</span> <span class="str">"explain utils/logger.ts"</span>
+
+<span class="cm"># Continue last session headlessly</span>
+claude <span class="kw">-c -p</span> <span class="str">"add unit tests for logger"</span>
+
+<span class="cm"># Plan mode + headless</span>
+claude <span class="kw">--permission-mode plan -p</span> <span class="str">"analyze auth system"</span>
+
+<span class="cm"># JSON output for scripting</span>
+claude <span class="kw">-p</span> <span class="str">"list type errors"</span> <span class="kw">--output-format json</span>
+
+<span class="cm"># Cap agent loops</span>
+claude <span class="kw">--max-turns 3 -p</span> <span class="str">"refactor auth"</span></div>
+
+<ul>
+<li>Great for CI/CD pipelines, git hooks, automation scripts</li>
+<li>Combine with <code>--output-format json</code> for machine-parseable output</li>
+<li>Use <code>--max-turns</code> to limit agent loops and cost</li>
+<li>Use <code>--max-budget-usd</code> to cap spend per session</li>
+</ul>` },
+
+  { q:"What is Sandbox Mode?", a:`Native OS-level isolation for filesystem and network access.
+
+<ul>
+<li>Activate with <code>/sandbox</code> in a session</li>
+<li>Uses Seatbelt (macOS) or bubblewrap (Linux) at the OS level</li>
+<li>Writes restricted to current working directory + subdirectories</li>
+<li>Reads unrestricted by default (can be hardened with deny rules)</li>
+<li>Network limited to explicitly allowed domains</li>
+<li>In auto-allow mode, Bash commands within sandbox run without permission prompts</li>
+<li>Without /sandbox, deny rules only block Claude's built-in tools — Bash bypasses them</li>
+<li>With /sandbox enabled, deny rules enforced at OS level for Bash too</li>
+</ul>` },
+];
+
+// ═══════════════════════════════════════════════════════
+// FAQ DATA — COMMANDS & SHORTCUTS
+// ═══════════════════════════════════════════════════════
+const FAQ_COMMANDS = [
+  { q:"Essential slash commands", a:`<table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td>/clear</td><td>Clears context (history kept on disk, Claude forgets in-session)</td></tr>
+<tr><td>/compact</td><td>Compresses conversation to save context window space. CLAUDE.md re-injected.</td></tr>
+<tr><td>/model</td><td>Switch models mid-session (sonnet, opus, haiku)</td></tr>
+<tr><td>/plan</td><td>Enter Plan Mode (read-only analysis)</td></tr>
+<tr><td>/resume</td><td>Interactive session picker — browse and switch sessions without exiting</td></tr>
+<tr><td>/status</td><td>Shows config layers, settings sources, any errors</td></tr>
+<tr><td>/doctor</td><td>Health check — diagnoses installation issues</td></tr>
+<tr><td>/context</td><td>Visualize current context window usage</td></tr>
+<tr><td>/cost</td><td>Show token costs for current session</td></tr>
+<tr><td>/memory</td><td>Browse/toggle auto-memory, view what Claude remembers</td></tr>
+<tr><td>/hooks</td><td>Configure hooks through interactive menu</td></tr>
+<tr><td>/config</td><td>Open configuration settings</td></tr>
+<tr><td>/export [file]</td><td>Save conversation to file or clipboard</td></tr>
+<tr><td>/terminal-setup</td><td>Configure Shift+Enter for multi-line input</td></tr>
+<tr><td>/init</td><td>Generate CLAUDE.md by analyzing your project</td></tr>
+<tr><td>/login</td><td>Authenticate (cached after first use)</td></tr>
+<tr><td>/sandbox</td><td>Enable OS-level filesystem/network sandboxing</td></tr>
+<tr><td>/add-dir</td><td>Add additional directories to the session</td></tr>
+<tr><td>/allowed-tools</td><td>Configure tool permission rules</td></tr>
+<tr><td>/install-github-app</td><td>Install Claude's GitHub PR review bot</td></tr>
+</table>` },
+
+  { q:"Keyboard shortcuts", a:`<table>
+<tr><th>Shortcut</th><th>Action</th></tr>
+<tr><td>Shift+Tab</td><td>Cycle permission modes: Normal → Auto-Accept → Plan</td></tr>
+<tr><td>Ctrl+C</td><td>Cancel current generation</td></tr>
+<tr><td>Ctrl+D</td><td>Quit session</td></tr>
+<tr><td>Ctrl+L</td><td>Clear screen (history kept)</td></tr>
+<tr><td>Ctrl+O</td><td>Toggle verbose mode (show extended thinking)</td></tr>
+<tr><td>Ctrl+G</td><td>Open plan/content in external text editor</td></tr>
+<tr><td>Ctrl+R</td><td>View conversation transcript</td></tr>
+<tr><td>Esc</td><td>Interrupt response (preserves context — redirect before it finishes)</td></tr>
+<tr><td>Esc Esc</td><td>Rewind — undo last exchange, edit your prompt, try again</td></tr>
+<tr><td>↑ / ↓</td><td>Cycle through prompt history</td></tr>
+<tr><td>\\ + Enter</td><td>Multi-line input (works everywhere)</td></tr>
+<tr><td>Shift+Enter</td><td>Multi-line input (after /terminal-setup)</td></tr>
+<tr><td>#</td><td>Add instruction that auto-updates CLAUDE.md</td></tr>
+<tr><td>@</td><td>File path autocomplete — reference files in prompts</td></tr>
+</table>
+<div class="tip-box">💡 <code>Esc Esc</code> (double-escape) is a game-changer: rewind to any point, undo file changes, re-prompt. No correction messages cluttering context.</div>` },
+
+  { q:"CLI flags for power users", a:`<div class="code"><span class="cm"># Model selection</span>
+claude <span class="kw">--model</span> claude-opus-4-6
+claude <span class="kw">--model</span> claude-sonnet-4-5-20250514
+
+<span class="cm"># Permission modes</span>
+claude <span class="kw">--permission-mode</span> plan
+claude <span class="kw">--dangerously-skip-permissions</span>  <span class="cm"># ⚠️ YOLO</span>
+
+<span class="cm"># Session management</span>
+claude <span class="kw">-c</span>                    <span class="cm"># continue last session</span>
+claude <span class="kw">-r</span> SESSION_ID          <span class="cm"># resume specific session</span>
+
+<span class="cm"># Headless / automation</span>
+claude <span class="kw">-p</span> <span class="str">"query"</span>             <span class="cm"># one-shot, no interactive UI</span>
+claude <span class="kw">--output-format json</span>   <span class="cm"># machine-parseable output</span>
+claude <span class="kw">--max-turns</span> 5          <span class="cm"># limit agent loops</span>
+claude <span class="kw">--max-budget-usd</span> 2.00  <span class="cm"># cost cap</span>
+
+<span class="cm"># Tool restrictions</span>
+claude <span class="kw">--allowedTools</span> <span class="str">"Read"</span> <span class="str">"Grep"</span> <span class="str">"Bash(npm test)"</span>
+claude <span class="kw">--disallowedTools</span> <span class="str">"Edit"</span> <span class="str">"WebFetch"</span>
+
+<span class="cm"># Context management</span>
+claude <span class="kw">--add-dir</span> ~/other-project
+claude <span class="kw">--append-system-prompt-file</span> ./extra-rules.txt
+
+<span class="cm"># Remote / teleport</span>
+claude <span class="kw">--remote</span>               <span class="cm"># start on claude.ai</span>
+claude <span class="kw">--teleport</span>             <span class="cm"># resume web session locally</span>
+
+<span class="cm"># Git integration</span>
+claude <span class="kw">--from-pr</span> https://github.com/org/repo/pull/123
+
+<span class="cm"># Debugging</span>
+claude <span class="kw">--verbose</span>
+claude <span class="kw">--debug</span> <span class="str">"api,mcp"</span></div>` },
+
+  { q:"Custom slash commands — how to create them", a:`Create reusable prompts as markdown files:
+
+<div class="code"><span class="cm"># Project commands (shared with team via git)</span>
+mkdir -p .claude/commands/
+echo <span class="str">"Analyze performance and suggest 3 optimizations:"</span> \\
+  > .claude/commands/optimize.md
+
+<span class="cm"># Personal commands (available in all projects)</span>
+mkdir -p ~/.claude/commands/
+echo <span class="str">"Review for security vulnerabilities and suggest fixes:"</span> \\
+  > ~/.claude/commands/security-review.md</div>
+
+<ul>
+<li>Access project commands: <code>/project:optimize</code></li>
+<li>Access personal commands: <code>/user:security-review</code></li>
+<li>Use <code>$ARGUMENTS</code> in the .md file to accept arguments</li>
+<li>Write commands in natural language — they're prompts, not code</li>
+</ul>` },
+];
+
+// ═══════════════════════════════════════════════════════
+// FAQ DATA — CONFIGURATION
+// ═══════════════════════════════════════════════════════
+const FAQ_CONFIG = [
+  { q:"settings.json — key properties reference", a:`<table>
+<tr><th>Property</th><th>What it controls</th></tr>
+<tr><td>permissions.allow</td><td>Array of tool patterns auto-approved, e.g. <code>"Bash(npm test)"</code>, <code>"Read(*)"</code></td></tr>
+<tr><td>permissions.deny</td><td>Array of blocked tool patterns, e.g. <code>"Read(./.env*)"</code>, <code>"Bash(rm -rf:*)"</code></td></tr>
+<tr><td>permissions.ask</td><td>Array of tools that always prompt for approval</td></tr>
+<tr><td>permissions.defaultMode</td><td><code>default</code> | <code>acceptEdits</code> | <code>plan</code> | <code>bypassPermissions</code></td></tr>
+<tr><td>permissions.disableBypassPermissionsMode</td><td>Set to <code>"disable"</code> to block YOLO mode</td></tr>
+<tr><td>permissions.additionalDirectories</td><td>Extra directories Claude can access</td></tr>
+<tr><td>env</td><td>Object of environment variables set at startup</td></tr>
+<tr><td>cleanupPeriodDays</td><td>Session transcript retention (default: 30)</td></tr>
+<tr><td>autoMemoryEnabled</td><td>Toggle auto-memory per project</td></tr>
+<tr><td>sandbox</td><td>Bash command isolation settings</td></tr>
+<tr><td>attribution.trailerMessage</td><td>Customize or hide co-authored-by git trailer</td></tr>
+<tr><td>hooks</td><td>Define PreToolUse, PostToolUse, Stop, etc. hooks</td></tr>
+</table>
+
+<div class="code"><span class="cm">// Example: ~/.claude/settings.json</span>
+{
+  <span class="str">"env"</span>: {
+    <span class="str">"ANTHROPIC_MODEL"</span>: <span class="str">"claude-sonnet-4-5-20250514"</span>,
+    <span class="str">"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"</span>: <span class="str">"1"</span>
+  },
+  <span class="str">"cleanupPeriodDays"</span>: 7,
+  <span class="str">"permissions"</span>: {
+    <span class="str">"allow"</span>: [<span class="str">"Bash(npm run *)"</span>, <span class="str">"Bash(git status)"</span>],
+    <span class="str">"deny"</span>: [
+      <span class="str">"Read(./.env*)"</span>,
+      <span class="str">"Read(./secrets/**)"</span>,
+      <span class="str">"Bash(rm -rf:*)"</span>,
+      <span class="str">"Bash(curl:*)"</span>,
+      <span class="str">"Bash(sudo:*)"</span>
+    ]
+  }
+}</div>
+<div class="tip-box">💡 Permission evaluation order: deny → ask → allow. First match wins. Claude auto-creates timestamped backups of config files (keeps last 5).</div>` },
+
+  { q:"Settings hierarchy — what overrides what?", a:`Settings merge from broadest to most specific. Higher scope always wins for conflicts:
+
+<table>
+<tr><th>Priority</th><th>Scope</th><th>Location</th></tr>
+<tr><td>🔒 Highest</td><td>Managed (enterprise)</td><td>/etc/claude-code/managed-settings.json</td></tr>
+<tr><td>↓</td><td>User</td><td>~/.claude/settings.json</td></tr>
+<tr><td>↓</td><td>Project (shared)</td><td>.claude/settings.json</td></tr>
+<tr><td>⬇️ Lowest</td><td>Project local</td><td>.claude/settings.local.json</td></tr>
+</table>
+
+<ul>
+<li>If managed denies <code>Bash(curl *)</code>, no user/project setting can override it</li>
+<li>Permission arrays <strong>merge</strong> across scopes (both user allow + project allow apply)</li>
+<li>For same key with different values, higher scope wins</li>
+<li>Shell env vars take precedence over <code>env</code> in settings.json</li>
+<li>Use <code>/status</code> to see which config layer each setting comes from</li>
+<li><code>.claude/settings.local.json</code> is auto-gitignored — safe for experiments</li>
+</ul>` },
+
+  { q:"MCP servers — extending Claude with external tools", a:`Model Context Protocol (MCP) connects Claude to external services. 1000+ community servers available.
+
+<div class="code"><span class="cm"># Add MCP server via CLI</span>
+claude mcp add <span class="str">github</span> <span class="kw">--transport http</span> https://mcp.github.com
+
+<span class="cm"># Add via JSON</span>
+claude mcp add-json <span class="str">puppeteer</span> <span class="str">'{"command":"docker","args":["run","-i","--rm","mcp/puppeteer"]}'</span>
+
+<span class="cm"># List servers</span>
+claude mcp list
+
+<span class="cm"># Debug MCP issues</span>
+claude <span class="kw">--mcp-debug</span></div>
+
+<ul>
+<li>Config in <code>.mcp.json</code> (project, git-tracked) or <code>~/.mcp.json</code> (global)</li>
+<li>Popular servers: GitHub, PostgreSQL, Puppeteer (browser), Sentry, filesystem, memory</li>
+<li>MCP servers can provide their own slash commands</li>
+<li>Tool Search (v2.1.7+) dynamically loads MCP tools to save context</li>
+</ul>` },
+
+  { q:"Hooks — automating tool behavior", a:`Hooks are shell commands that execute at specific points in Claude's workflow. 8 hook events available:
+
+<ul>
+<li><strong>UserPromptSubmit</strong> — fires when you submit a prompt (before processing)</li>
+<li><strong>PreToolUse</strong> — before a tool executes (can block with exit 2)</li>
+<li><strong>PostToolUse</strong> — after a tool completes (e.g., auto-format after writes)</li>
+<li><strong>Stop</strong> — when Claude finishes responding (can force continuation)</li>
+<li>Configure via <code>/hooks</code> interactive menu or in settings.json</li>
+<li>Hooks receive JSON via stdin with context about the event</li>
+<li>Exit code 2 = block the action with error message</li>
+<li><strong>Prompt hooks</strong> use <code>"type": "prompt"</code> — sends to fast model for yes/no judgment</li>
+</ul>
+
+<div class="code"><span class="cm">// Example: Block rm -rf in settings.json</span>
+{
+  <span class="str">"hooks"</span>: {
+    <span class="str">"PreToolUse"</span>: [{
+      <span class="str">"matcher"</span>: <span class="str">"Bash"</span>,
+      <span class="str">"hooks"</span>: [{
+        <span class="str">"type"</span>: <span class="str">"command"</span>,
+        <span class="str">"command"</span>: <span class="str">"jq -r '.input.command' | grep -q 'rm -rf' && echo 'Use trash instead' && exit 2 || exit 0"</span>
+      }]
+    }]
+  }
+}</div>
+<div class="tip-box">💡 Use <code>/hookify</code> (plugin) to generate hooks from plain English: "/hookify Warn me when I use rm -rf commands"</div>` },
+
+  { q:"Skills vs Slash Commands — what's the difference?", a:`<table>
+<tr><th></th><th>Slash Commands</th><th>Skills</th></tr>
+<tr><td>Triggered by</td><td>You type <code>/command</code></td><td>Claude auto-invokes based on context</td></tr>
+<tr><td>Complexity</td><td>Simple prompts, single file</td><td>Complex workflows, multiple files + scripts</td></tr>
+<tr><td>Location</td><td>.claude/commands/ or ~/.claude/commands/</td><td>.claude/skills/ or ~/.claude/skills/</td></tr>
+<tr><td>Definition</td><td>Single .md file with prompt text</td><td>Directory with SKILL.md + optional scripts</td></tr>
+<tr><td>Discovery</td><td>Manual (<code>/command-name</code>)</td><td>Automatic (model reads description, decides to use)</td></tr>
+</table>
+
+<ul>
+<li>Use <strong>commands</strong> for quick, user-initiated prompts</li>
+<li>Use <strong>skills</strong> for comprehensive workflows Claude should autonomously invoke</li>
+<li>Skills can include shell scripts, resources, and complex multi-step logic</li>
+</ul>` },
+];
+
+// ═══════════════════════════════════════════════════════
+// FAQ DATA — POWER USER
+// ═══════════════════════════════════════════════════════
+const FAQ_POWER = [
+  { q:"Git worktrees — parallel Claude sessions", a:`Run multiple Claude agents simultaneously on different features using git worktrees:
+
+<div class="code"><span class="cm"># Create isolated worktrees</span>
+git worktree add ../feature-auth auth-branch
+git worktree add ../feature-api api-branch
+
+<span class="cm"># Run Claude in each (separate terminals)</span>
+cd ../feature-auth && claude
+cd ../feature-api && claude
+
+<span class="cm"># Or use --worktree flag (v2.1.49+)</span>
+claude <span class="kw">--worktree</span></div>
+
+<ul>
+<li>Each worktree is a separate directory with its own branch checkout</li>
+<li>Claude sessions are isolated — no conflict between agents</li>
+<li>Same git repo, shared history, different working copies</li>
+<li>Merge results back: <code>git merge feature-auth</code></li>
+</ul>` },
+
+  { q:"Subagents — spawning specialized Claude instances", a:`Claude Code can spawn sub-instances of itself for parallel or specialized work:
+
+<ul>
+<li><strong>Plan subagent</strong> — read-only analysis and planning</li>
+<li><strong>Task subagent</strong> — focused execution on a specific subtask</li>
+<li><strong>Explore subagent</strong> — codebase exploration and search</li>
+<li>Subagents can maintain their own auto-memory</li>
+<li>Used internally by plan mode and multi-step workflows</li>
+<li>You can create custom agents via <code>.claude/skills/</code></li>
+</ul>
+
+<div class="code"><span class="cm"># Headless subagent pattern (in scripts)</span>
+claude <span class="kw">-p</span> <span class="str">"analyze auth module"</span> <span class="kw">--max-turns 3</span> &
+claude <span class="kw">-p</span> <span class="str">"analyze database module"</span> <span class="kw">--max-turns 3</span> &
+wait</div>` },
+
+  { q:"Remote & Teleport — cloud ↔ local seamless switching", a:`<ul>
+<li><code>claude --remote</code> — starts a session on claude.ai (cloud compute)</li>
+<li><code>claude --teleport</code> or <code>/teleport</code> — resumes a cloud session locally</li>
+<li>Start heavy analysis on the cloud, bring it to your local terminal to execute changes</li>
+<li>Available for Max subscribers</li>
+</ul>` },
+
+  { q:"PR Review automation — GitHub integration", a:`<div class="code"><span class="cm"># Install the GitHub app</span>
+/install-github-app
+
+<span class="cm"># Review a PR from CLI</span>
+claude <span class="kw">--from-pr</span> https://github.com/org/repo/pull/123
+
+<span class="cm"># CI/CD: Auto-review on every PR</span>
+<span class="cm"># (in GitHub Actions workflow)</span>
+claude <span class="kw">-p</span> <span class="str">"Review this PR for security and performance"</span> \\
+  <span class="kw">--output-format json</span> > review.json</div>
+
+<ul>
+<li>After /install-github-app, Claude auto-reviews PRs</li>
+<li>Customize the review prompt in <code>claude-code-review.yml</code></li>
+<li>Claude finds logic errors and security issues humans miss</li>
+<li>Reduce verbosity in the config — default is too chatty</li>
+</ul>` },
+
+  { q:"Cost control and optimization", a:`<ul>
+<li><code>/cost</code> — view token costs for current session</li>
+<li><code>/context</code> — visualize context window usage</li>
+<li><code>--max-budget-usd 2.00</code> — hard cost cap per session</li>
+<li><code>--max-turns 5</code> — limit agent loop iterations</li>
+<li><code>/clear</code> often — start fresh for new tasks, don't drag old context</li>
+<li><code>/compact</code> — compress conversation to save tokens</li>
+<li>Use Sonnet for most tasks, Opus only for complex decisions</li>
+<li>Auto model selection: Opus until 50% usage, then Sonnet</li>
+<li>Set <code>DISABLE_NON_ESSENTIAL_MODEL_CALLS=1</code> to reduce background API calls</li>
+</ul>` },
+
+  { q:"Plugins — extending Claude Code's capabilities", a:`<div class="code"><span class="cm"># Browse plugin marketplaces</span>
+claude plugin marketplace add trailofbits/skills
+
+<span class="cm"># Install a specific plugin</span>
+/plugin install agent-browser@agent-browser
+
+<span class="cm"># Use npx skills installer</span>
+npx -y skills add --all feiskyer/claude-code-settings
+
+<span class="cm"># Desktop extensions (DXT)</span>
+npm install -g @anthropic-ai/dxt
+dxt init
+dxt pack</div>
+
+<ul>
+<li>Plugins provide: skills, agents, commands, hooks, MCP servers</li>
+<li>Distributed through marketplaces or npm</li>
+<li>Notable: agent-browser (Chrome automation), conversation-saver, hookify</li>
+<li>Community resources: <code>awesome-claude-code</code> on GitHub</li>
+</ul>` },
+
+  { q:"Environment variables cheat sheet", a:`<table>
+<tr><th>Variable</th><th>Effect</th></tr>
+<tr><td>ANTHROPIC_API_KEY</td><td>API key for authentication</td></tr>
+<tr><td>ANTHROPIC_MODEL</td><td>Default model override</td></tr>
+<tr><td>ANTHROPIC_BASE_URL</td><td>Custom API endpoint (proxies, local LLMs)</td></tr>
+<tr><td>CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC</td><td>Reduce background API calls (cost savings)</td></tr>
+<tr><td>DISABLE_NON_ESSENTIAL_MODEL_CALLS</td><td>Further reduce non-essential calls</td></tr>
+<tr><td>DISABLE_TELEMETRY</td><td>Opt out of telemetry</td></tr>
+<tr><td>CLAUDE_CODE_DISABLE_AUTO_MEMORY</td><td>Disable auto-memory</td></tr>
+<tr><td>CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR</td><td>Reset to project dir after each bash command</td></tr>
+<tr><td>API_TIMEOUT_MS</td><td>API request timeout (default varies)</td></tr>
+<tr><td>ANTHROPIC_DEFAULT_SONNET_MODEL</td><td>Override which model is used for "sonnet"</td></tr>
+<tr><td>ANTHROPIC_DEFAULT_OPUS_MODEL</td><td>Override which model is used for "opus"</td></tr>
+<tr><td>ANTHROPIC_DEFAULT_HAIKU_MODEL</td><td>Override which model is used for "haiku"</td></tr>
+</table>
+<div class="tip-box">💡 Set env vars in <code>settings.json</code> under the <code>"env"</code> key for automatic loading each session — no need to export in shell.</div>` },
+
+  { q:"The expert's daily workflow", a:`Here's how power users typically work with Claude Code:
+
+<ul>
+<li><strong>Start fresh:</strong> <code>claude</code> in project root. Run <code>/init</code> on new projects to generate CLAUDE.md.</li>
+<li><strong>Explore first:</strong> Use Plan Mode (<code>Shift+Tab</code> twice) to understand before changing. Let Claude ask clarifying questions.</li>
+<li><strong>Be specific:</strong> "Fix the None comparison bug in auth.py line 42" beats "fix the bug"</li>
+<li><strong>Use @ references:</strong> <code>@src/auth.py</code> directly references files in prompts</li>
+<li><strong>Clear often:</strong> <code>/clear</code> between unrelated tasks. Context window is precious.</li>
+<li><strong>Rewind, don't correct:</strong> <code>Esc Esc</code> to undo + re-prompt instead of sending correction messages</li>
+<li><strong>Review diffs carefully:</strong> Claude shows changes before applying. Read them.</li>
+<li><strong>Parallelize:</strong> Git worktrees + multiple terminal tabs = agents working simultaneously</li>
+<li><strong>Automate repetition:</strong> Create custom /commands for frequent workflows</li>
+<li><strong>Version control everything:</strong> Commit .claude/settings.json, .claude/commands/, CLAUDE.md</li>
+</ul>
+
+<div class="warn-box">⚠️ Never use <code>--dangerously-skip-permissions</code> on a machine with production data. Reserve for containers and CI/CD only.</div>` },
+];
+
+// ═══════════════════════════════════════════════════════
+// RENDER FAQs
+// ═══════════════════════════════════════════════════════
+function renderFAQ(containerId, data) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = data.map((item, i) => `
+    <div class="faq-card" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span>${item.q}</span><span class="fq-icon">▾</span></div>
+      <div class="faq-a">${item.a}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  drawConns();
+  window.addEventListener('resize', drawConns);
+  renderFAQ('faq-files', FAQ_FILES);
+  renderFAQ('faq-modes', FAQ_MODES);
+  renderFAQ('faq-commands', FAQ_COMMANDS);
+  renderFAQ('faq-config', FAQ_CONFIG);
+  renderFAQ('faq-power', FAQ_POWER);
+});
+</script>
+</body>
+</html>
