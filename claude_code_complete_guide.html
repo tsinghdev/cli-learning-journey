@@ -394,9 +394,9 @@ const CONNS = [
   {f:"tools",t:"fs",la:"",fa:"bottom",ta:"top"},
   {f:"tools",t:"bash",la:"",fa:"bottom",ta:"top"},
   {f:"tools",t:"apiclient",la:"results",fa:"bottom",ta:"top"},
-  {f:"apiclient",t:"api",la:"HTTPS stream",fa:"bottom",ta:"top"},
+  {f:"apiclient",t:"api",la:"HTTPS stream",fa:"bottom",ta:"top",lox:-70,loy:0},
   {f:"api",t:"context",la:"builds",fa:"bottom",ta:"top"},
-  {f:"api",t:"apiclient",la:"response / tool_use",fa:"left",ta:"right"},
+  {f:"api",t:"apiclient",la:"response / tool_use",fa:"left",ta:"right",lox:70,loy:0},
 ];
 
 function anchorPt(el, a) {
@@ -431,7 +431,7 @@ function drawConns() {
     path.setAttribute('marker-end','url(#arr)'); svg.appendChild(path);
     if(c.la){
       const t=document.createElementNS(NS,'text');
-      t.setAttribute('x',(p1.x+p2.x)/2); t.setAttribute('y',(p1.y+p2.y)/2-6);
+      t.setAttribute('x',(p1.x+p2.x)/2+(c.lox||0)); t.setAttribute('y',(p1.y+p2.y)/2-6+(c.loy||0));
       t.setAttribute('text-anchor','middle'); t.setAttribute('class','clabel'); t.id=`cl${i}`;
       t.textContent=c.la; svg.appendChild(t);
     }
