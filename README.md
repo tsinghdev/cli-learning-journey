@@ -10,10 +10,12 @@ Notes and resources from learning CLI tooling and workflows.
 
 ## Topics Covered
 
-- Claude Code setup and configuration
-- Working with the GitHub CLI (`gh`)
-- Git fundamentals and repository management
-- Terminal permissions and environment setup
+- How Claude Code works
+- Files and storage
+- Modes
+- Commands and shortcuts
+- Configuration
+- Power user skills
 
 ## Disclaimer
 
